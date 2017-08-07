@@ -12,7 +12,7 @@ import (
 	"path"
 )
 
-const idbVersion = 2
+const idbApiVersion = 2
 
 // ErrStatus is returned if a unexpected HTTP status was returned by the IDB.
 type ErrStatus struct {
@@ -48,7 +48,7 @@ func NewIdb(apiURL, apiToken string, insecureSkipVerify bool) (*Idb, error) {
 		return nil, err
 	}
 
-	i.url.Path = fmt.Sprintf("/api/v%v", idbVersion)
+	i.url.Path = fmt.Sprintf("/api/v%v", idbApiVersion)
 
 	i.transport = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: insecureSkipVerify}}
 	i.apiToken = apiToken
