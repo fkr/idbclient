@@ -12,7 +12,7 @@ import (
 	"path"
 )
 
-const idbApiVersion = 2
+const idbApiVersion = 3
 
 // ErrStatus is returned if a unexpected HTTP status was returned by the IDB.
 type ErrStatus struct {
@@ -66,8 +66,8 @@ func (i *Idb) joinBaseURL(p ...string) *url.URL {
 
 // request sends a request to the IDB and returns the response and possible errors.
 func (i *Idb) request(r *http.Request) (*http.Response, error) {
+	r.Header.Set("X-IDB-API-Token", i.apiToken)
 	query := r.URL.Query()
-	query.Add("idb_api_token", i.apiToken)
 	r.URL.RawQuery = query.Encode()
 
 	if i.Debug {
@@ -139,10 +139,9 @@ func (i *Idb) UpdateMachine(m *machine.Machine, create bool) (*machine.Machine, 
 // GetMachine retrieves a single machine identified by fqdn.
 func (i *Idb) GetMachine(fqdn string) (*machine.Machine, error) {
 	fqdn = url.QueryEscape(fqdn)
-	u := i.joinBaseURL("machines")
+	u := i.joinBaseURL("machines", fqdn)
 
 	query := url.Values{}
-	query.Add("fqdn",fqdn)
 	u.RawQuery = query.Encode()
 
 	request, err := http.NewRequest("GET", u.String(), nil)
